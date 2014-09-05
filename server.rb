@@ -9,6 +9,18 @@ configure :development, :test do
   require 'pry'
 end
 
+def db_connection
+    begin
+      connection = PG.connect(dbname: 'recipes')
+
+    yield(connection)
+
+    ensure
+    connection.close
+    end
+  end
+
+
 get '/' do
   erb :'index'
 end
@@ -20,5 +32,6 @@ end
 
 get '/recipes/:id' do
   @recipe = Recipe.find(params[:id])
+  id = params[:id]
   erb :'recipes/show'
 end
